@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:dio/native_imp.dart';
 
@@ -10,7 +11,7 @@ class LoginRepository extends Disposable {
 
   LoginRepository(this.client);
 
-  Future<Response> login({email, password}) async {
+  Future<Response> login({@required email, @required password}) async {
     final response = await client.post(
       '/login',
       data: {

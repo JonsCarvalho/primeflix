@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:dio/native_imp.dart';
 
@@ -9,10 +11,21 @@ class RegisterRepository extends Disposable {
 
   RegisterRepository(this.client);
 
-  Future fetchPost() async {
-    final response =
-        await client.get('https://jsonplaceholder.typicode.com/posts/1');
-    return response.data;
+  Future<Response> register({
+    @required name,
+    @required email,
+    @required password,
+  }) async {
+    final response = await client.post(
+      '/usuario',
+      data: {
+        'email': email,
+        'nome': name,
+        'senha': password,
+        'confirma_senha': password,
+      },
+    );
+    return response;
   }
 
   //dispose will be called automatically

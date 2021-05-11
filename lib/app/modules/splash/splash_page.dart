@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mobx/mobx.dart';
 import 'splash_controller.dart';
 
 class SplashPage extends StatefulWidget {
@@ -11,21 +14,37 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends ModularState<SplashPage, SplashController> {
-  //use 'controller' variable to access controller
+  ReactionDisposer disposer;
+
+  @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark));
+
+    disposer = autorun((_) async {
+      await Future.delayed(Duration(seconds: 3));
+
+      Modular.to.pushReplacementNamed('/login');
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Container(
-        child: Center(
-          child: RaisedButton(
-            onPressed: () {
-              Modular.to.pushNamed('/login');
-            },
-            child: Text('Entre no login'),
+      body: Center(
+        child: Text(
+          'primeflix',
+          style: GoogleFonts.bebasNeue(
+            color: Theme.of(context).primaryColor,
+            fontSize: 100,
           ),
         ),
       ),

@@ -1,3 +1,5 @@
+import 'package:cool_alert/cool_alert.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -27,21 +29,33 @@ abstract class _LoginControllerBase with Store {
 
     if (result.statusCode == 400) {
       loginState = LoginState.FAIL_NOT_REGISTERED;
-      // Utils.handleOperationException(context, result.exception);
+      CoolAlert.show(
+        context: context,
+        title: 'Erro',
+        confirmBtnColor: Theme.of(context).primaryColor,
+        borderRadius: 15,
+        type: CoolAlertType.error,
+        text: result.statusMessage,
+        onConfirmBtnTap: () {
+          Modular.to.pop();
+        },
+      );
     } else if (result.statusCode != 200) {
       loginState = LoginState.FAIL;
-      // Utils.handleOperationException(context, result.exception);
+      CoolAlert.show(
+        context: context,
+        title: 'Erro',
+        confirmBtnColor: Theme.of(context).primaryColor,
+        borderRadius: 15,
+        type: CoolAlertType.error,
+        text: result.statusMessage,
+        onConfirmBtnTap: () {
+          Modular.to.pop();
+        },
+      );
     }
 
     if (result.data != null) {
-      // savingUserInSharedPreferences(result.data);
-
-      // String authToken = await SharedPreferencesUtils.getAuthToken();
-
-      // graph.GraphQLClient graphQLClientUpdated =
-      //     GraphQLApi.getClientUpdatingToken(authToken).value;
-      // graph.GraphQLProvider.of(context).value = graphQLClientUpdated;
-
       loginState = LoginState.SUCCESS;
 
       Modular.to.pushReplacementNamed('/home');
