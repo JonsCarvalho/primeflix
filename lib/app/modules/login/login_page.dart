@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'components/input_field_widget.dart';
 import 'components/login_button.dart';
 import 'login_controller.dart';
@@ -17,46 +18,17 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
   final EdgeInsets _horizontalPadding =
       const EdgeInsets.symmetric(horizontal: 16);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.title),
-//       ),
-//       body: Container(
-//         child: Center(
-//           child: Column(
-//             children: [
-//               RaisedButton(
-//                 onPressed: () {
-//                   Modular.to.pushNamed('/home');
-//                 },
-//                 child: Text('Entre na home'),
-//               ),
-//               RaisedButton(
-//                 onPressed: () {
-//                   Modular.to.pushNamed('/register');
-//                 },
-//                 child: Text('Entre na página de cadastro'),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        body: ListView(
-          physics: BouncingScrollPhysics(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // header(),
-            // SizedBox(height: 15),
+            header(),
+            SizedBox(height: 15),
             inputLogin(),
             SizedBox(height: 15),
             loginButton(),
@@ -69,20 +41,23 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
     );
   }
 
-  // header() {
-  //   return Padding(
-  //     padding: _horizontalPadding,
-  //     child: Container(
-  //       height: 200,
-  //       // decoration: BoxDecoration(
-  //       //   image: DecorationImage(
-  //       //     image: ,
-  //       //     fit: BoxFit.fitHeight,
-  //       //   ),
-  //       // ),
-  //     ),
-  //   );
-  // }
+  header() {
+    return Padding(
+      padding: _horizontalPadding,
+      child: Center(
+        child: Container(
+          height: 200,
+          child: Text(
+            'primeflix',
+            style: GoogleFonts.bebasNeue(
+              color: Theme.of(context).primaryColor,
+              fontSize: 60,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   signUp() {
     return InkWell(
@@ -106,7 +81,7 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
               Text(
                 " Cadastre-se com seu e-mail",
                 style: TextStyle(
-                  color: Color.fromRGBO(201, 29, 69, 1),
+                  color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                 ),

@@ -26,7 +26,7 @@ abstract class _LoginControllerBase with Store {
     var result = await loginRepository.login(email: email, password: password);
 
     if (result.statusCode == 400) {
-      loginState = LoginState.FAIL;
+      loginState = LoginState.FAIL_NOT_REGISTERED;
       // Utils.handleOperationException(context, result.exception);
     } else if (result.statusCode != 200) {
       loginState = LoginState.FAIL;
@@ -42,18 +42,11 @@ abstract class _LoginControllerBase with Store {
       //     GraphQLApi.getClientUpdatingToken(authToken).value;
       // graph.GraphQLProvider.of(context).value = graphQLClientUpdated;
 
-      loginState = LoginState.SUCCESS_CUSTOMER;
+      loginState = LoginState.SUCCESS;
 
       Modular.to.pushReplacementNamed('/home');
     }
   }
 }
 
-enum LoginState {
-  IDLE,
-  SUCCESS_CUSTOMER,
-  SUCCESS_REGISTER_CUSTOMER,
-  SUCCESS_CUSTOMER_NOT_REGISTERED,
-  FAIL,
-  LOADING
-}
+enum LoginState { IDLE, SUCCESS, FAIL_NOT_REGISTERED, FAIL, LOADING }

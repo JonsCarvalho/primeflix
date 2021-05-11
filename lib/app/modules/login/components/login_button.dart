@@ -33,7 +33,7 @@ class LoginButton extends StatelessWidget {
             color: loading
                 ? Colors.transparent
                 : isValid
-                    ? Color.fromRGBO(201, 29, 69, 1)
+                    ? Theme.of(context).primaryColor
                     : Colors.grey.shade400,
             borderRadius: new BorderRadius.circular(10),
             boxShadow: loading
@@ -41,7 +41,7 @@ class LoginButton extends StatelessWidget {
                 : isValid
                     ? [
                         BoxShadow(
-                          color: Color.fromRGBO(201, 29, 69, 1).withAlpha(100),
+                          color: Theme.of(context).primaryColor.withAlpha(100),
                           blurRadius: 10,
                           spreadRadius: 3,
                           offset: Offset(

@@ -10,8 +10,13 @@ class MoviesRepository extends Disposable {
 
   MoviesRepository(this.client);
 
-  Future<Response> getMovies({email, password}) async {
+  Future<Response> getMovies() async {
     final response = await client.get('/filme');
+    return response;
+  }
+
+  Future<Response> getRecentMovies() async {
+    final response = await client.get('/filmes_recentes');
     return response;
   }
 
