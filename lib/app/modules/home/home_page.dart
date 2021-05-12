@@ -5,6 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:primeflix/app/modules/profile/profile_module.dart';
 import 'package:primeflix/app/modules/search/search_module.dart';
+import 'package:primeflix/app/shared/models/movie_model.dart';
 import 'components/navigation_bar/navigation_bar_widget.dart';
 import 'home_controller.dart';
 
@@ -20,10 +21,21 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
   CarouselController buttonCarouselController = CarouselController();
   int _current = 0;
 
-  @override
   void initState() {
     controller.pageController = PageController();
+    init();
     super.initState();
+  }
+
+  init() async {
+    var args = Modular.args;
+    if (args?.data == null) {
+      print('no args found');
+      Modular.to.pop();
+      return;
+    }
+
+    controller.setUser(args.data['user']);
   }
 
   @override
@@ -62,61 +74,13 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
         return Center(child: Text('Erro na requisição!'));
       }
 
-      List<Widget> recentListWidget = controller.listRecentMovies
-          .map(
-            (element) => Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(element.banner),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          )
-          .toList();
+      List<Widget> recentListWidget =
+          controller.listRecentMovies.map((movie) => banner(movie)).toList();
 
       return ListView(
         physics: BouncingScrollPhysics(),
         children: <Widget>[
-          Stack(
-            children: [
-              CarouselSlider(
-                items: recentListWidget,
-                options: CarouselOptions(
-                    autoPlay: true,
-                    enlargeCenterPage: false,
-                    viewportFraction: 1,
-                    aspectRatio: 2.0,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    }),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: recentListWidget.map((movie) {
-                    int index = recentListWidget.indexOf(movie);
-                    return Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                            _current == index ? Colors.white : Colors.grey[400],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
+          carousel(recentListWidget),
           horizontalListMovies(title: 'Filmes mais populares'),
           horizontalListMovies(title: 'Ação e aventura'),
           horizontalListMovies(title: 'Filmes da Marvel'),
@@ -190,6 +154,67 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget carousel(List<Widget> recentListWidget) {
+    return Stack(
+      children: [
+        CarouselSlider(
+          items: recentListWidget,
+          options: CarouselOptions(
+              autoPlay: true,
+              enlargeCenterPage: false,
+              viewportFraction: 1,
+              aspectRatio: 2.0,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
+              }),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: recentListWidget.map((movie) {
+              int index = recentListWidget.indexOf(movie);
+              return Container(
+                width: 8.0,
+                height: 8.0,
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _current == index ? Colors.white : Colors.grey[400],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget banner(MovieModel movie) {
+    return InkWell(
+      onTap: () {
+        Modular.to.pushNamed(
+          '/movie',
+          arguments: {
+            'movieModel': movie,
+          },
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(movie.banner),
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }

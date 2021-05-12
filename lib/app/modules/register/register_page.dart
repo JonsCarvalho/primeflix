@@ -21,19 +21,20 @@ class _RegisterPageState
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            inputLogin(),
-            SizedBox(height: 15),
-            loginButton(),
-            SizedBox(height: 15),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Registro de usuários'),
+        leading: BackButton(),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          inputLogin(),
+          SizedBox(height: 15),
+          loginButton(),
+          SizedBox(height: 15),
+        ],
       ),
     );
   }

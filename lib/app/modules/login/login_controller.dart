@@ -2,6 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:primeflix/app/shared/models/user_model.dart';
 
 import 'input_login_controller.dart';
 import 'login_repository.dart';
@@ -14,6 +15,9 @@ class LoginController = _LoginControllerBase with _$LoginController;
 abstract class _LoginControllerBase with Store {
   var loginClient = InputLoginController();
   final loginRepository = Modular.get<LoginRepository>();
+
+  @observable
+  UserModel user;
 
   @computed
   bool get loading => loginState == LoginState.LOADING;
@@ -55,10 +59,12 @@ abstract class _LoginControllerBase with Store {
       );
     }
 
-    if (result.data != null) {
+    if (result.statusCode == 200) {
+      user = UserModel.fromJson(result.data);
+
       loginState = LoginState.SUCCESS;
 
-      Modular.to.pushReplacementNamed('/home');
+      Modular.to.pushReplacementNamed('/home', arguments: {'user': user});
     }
   }
 }

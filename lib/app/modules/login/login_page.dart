@@ -139,24 +139,6 @@ class _LoginPageState extends ModularState<LoginPage, LoginController> {
   }
 
   loginButton() {
-    // return Padding(
-    //   padding: _horizontalPadding,
-    //   child: Observer(builder: (_) {
-    //     return InkWell(
-    //       onTap: (){
-    //         controller.signInWithEmailAndPassword(
-    //           controller.loginClient.email,
-    //           controller.loginClient.password,
-    //           context,
-    //         );
-    //         Modular.to.pushReplacementNamed('/home');
-    //       },
-    //       child: Container(
-    //         height: 45,
-    //         width: 150,
-    //         color: Colors.orange,
-    //       ),
-    //     );
     return Padding(
       padding: _horizontalPadding,
       child: Observer(builder: (_) {

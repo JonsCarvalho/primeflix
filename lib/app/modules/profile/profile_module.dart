@@ -1,3 +1,4 @@
+import 'package:primeflix/app/modules/home/home_controller.dart';
 import 'profile_controller.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -7,6 +8,7 @@ class ProfileModule extends ChildModule {
   @override
   List<Bind> get binds => [
         $ProfileController,
+        $HomeController,
       ];
 
   @override

@@ -164,7 +164,7 @@ abstract class _RegisterControllerBase with Store {
           title: 'Sucesso!',
           confirmBtnColor: Theme.of(context).primaryColor,
           borderRadius: 15,
-          type: CoolAlertType.error,
+          type: CoolAlertType.success,
           text: 'Usuário criado com sucesso! Deseja realizar o login?',
           onConfirmBtnTap: () async {
             await loginController.signInWithEmailAndPassword(
@@ -172,6 +172,7 @@ abstract class _RegisterControllerBase with Store {
           },
           confirmBtnText: 'Login',
           cancelBtnText: 'Voltar',
+          showCancelBtn: true,
           onCancelBtnTap: () {
             Modular.to.pop();
           });

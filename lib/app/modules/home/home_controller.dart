@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:primeflix/app/modules/login/login_controller.dart';
 import 'package:primeflix/app/shared/models/movie_model.dart';
+import 'package:primeflix/app/shared/models/user_model.dart';
 
 import 'components/navigation_bar/navigation_bar_controller.dart';
 import 'movies_repository.dart';
@@ -13,10 +15,14 @@ class HomeController = _HomeControllerBase with _$HomeController;
 
 abstract class _HomeControllerBase with Store {
   final navigationBarController = Modular.get<NavigationBarController>();
+  final loginController = Modular.get<LoginController>();
   final moviesRepository = Modular.get<MoviesRepository>();
 
   @computed
   bool get loading => getMoviesState == GetMoviesState.LOADING;
+
+  @observable
+  UserModel user;
 
   @observable
   GetMoviesState getMoviesState = GetMoviesState.LOADING;
@@ -45,6 +51,9 @@ abstract class _HomeControllerBase with Store {
 
   @action
   setMovies(value) => listMovies = value;
+
+  @action
+  setUser(value) => user = value;
 
   @action
   getMovies() async {

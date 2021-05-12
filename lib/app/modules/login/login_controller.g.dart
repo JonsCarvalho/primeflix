@@ -26,6 +26,21 @@ mixin _$LoginController on _LoginControllerBase, Store {
           name: '_LoginControllerBase.loading'))
       .value;
 
+  final _$userAtom = Atom(name: '_LoginControllerBase.user');
+
+  @override
+  UserModel get user {
+    _$userAtom.reportRead();
+    return super.user;
+  }
+
+  @override
+  set user(UserModel value) {
+    _$userAtom.reportWrite(value, super.user, () {
+      super.user = value;
+    });
+  }
+
   final _$loginStateAtom = Atom(name: '_LoginControllerBase.loginState');
 
   @override
@@ -54,6 +69,7 @@ mixin _$LoginController on _LoginControllerBase, Store {
   @override
   String toString() {
     return '''
+user: ${user},
 loginState: ${loginState},
 loading: ${loading}
     ''';

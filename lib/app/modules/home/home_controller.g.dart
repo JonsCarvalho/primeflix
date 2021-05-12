@@ -26,6 +26,21 @@ mixin _$HomeController on _HomeControllerBase, Store {
           name: '_HomeControllerBase.loading'))
       .value;
 
+  final _$userAtom = Atom(name: '_HomeControllerBase.user');
+
+  @override
+  UserModel get user {
+    _$userAtom.reportRead();
+    return super.user;
+  }
+
+  @override
+  set user(UserModel value) {
+    _$userAtom.reportWrite(value, super.user, () {
+      super.user = value;
+    });
+  }
+
   final _$getMoviesStateAtom = Atom(name: '_HomeControllerBase.getMoviesState');
 
   @override
@@ -139,6 +154,17 @@ mixin _$HomeController on _HomeControllerBase, Store {
   }
 
   @override
+  dynamic setUser(dynamic value) {
+    final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
+        name: '_HomeControllerBase.setUser');
+    try {
+      return super.setUser(value);
+    } finally {
+      _$_HomeControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setRecentMovies(dynamic value) {
     final _$actionInfo = _$_HomeControllerBaseActionController.startAction(
         name: '_HomeControllerBase.setRecentMovies');
@@ -152,6 +178,7 @@ mixin _$HomeController on _HomeControllerBase, Store {
   @override
   String toString() {
     return '''
+user: ${user},
 getMoviesState: ${getMoviesState},
 pageController: ${pageController},
 listMovies: ${listMovies},

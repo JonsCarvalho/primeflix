@@ -2,8 +2,8 @@ class UserModel {
   int id;
   String email, name, password, token;
   int totalTime;
-  double iat;
-  double exp;
+  int iat;
+  int exp;
 
   UserModel({
     this.id,
