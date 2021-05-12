@@ -5,6 +5,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:primeflix/app/shared/models/movie_model.dart';
+import 'package:primeflix/app/shared/models/movie_user_model.dart';
 import 'movie_controller.dart';
 
 class MoviePage extends StatefulWidget {
@@ -30,18 +31,33 @@ class _MoviePageState extends ModularState<MoviePage, MovieController> {
       return;
     }
 
-    controller.setMovie(args.data['movieModel']);
+    await controller.setMovie(args.data['movieModel']);
+    await controller.getMovies();
+    if (controller.movieUserModel == null) {
+      await controller.watchLater();
+      await controller.getMovies();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(LineAwesomeIcons.heart_1),
-      ),
+      floatingActionButton: Observer(builder: (_) {
+        return FloatingActionButton(
+          onPressed: () {
+            controller.favorite();
+          },
+          child: Icon(
+            controller.movieUserModel != null &&
+                    controller.movieUserModel.favorite == 1
+                ? LineAwesomeIcons.heart_1
+                : LineAwesomeIcons.heart,
+          ),
+        );
+      }),
       body: Observer(builder: (_) {
-        if (controller.movieModel == null) {
+        if (controller.movieModel == null ||
+            controller.movieUserModel == null) {
           return Center(child: CircularProgressIndicator());
         }
 
@@ -54,12 +70,15 @@ class _MoviePageState extends ModularState<MoviePage, MovieController> {
                 body(controller.movieModel),
               ],
             ),
-            AppBar(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () => Modular.to.pop(),
+            Container(
+              height: 200,
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () => Modular.to.pop(),
+                ),
               ),
             ),
           ],
@@ -101,42 +120,54 @@ class _MoviePageState extends ModularState<MoviePage, MovieController> {
   }
 
   body(MovieModel movie) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            movie.name,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.3,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  movie.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.3,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                SizedBox(height: 15),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (controller.movieUserModel != null &&
+                        controller.movieUserModel.watched == 0)
+                      Expanded(child: watchLater()),
+                    SizedBox(width: 15),
+                    if (controller.movieUserModel != null &&
+                        controller.movieUserModel.watched == 1)
+                      Expanded(child: watched()),
+                  ],
+                ),
+                SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    rating(),
+                    parentalRating(),
+                  ],
+                ),
+                SizedBox(height: 25),
+                play(),
+              ],
             ),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
           ),
-          SizedBox(height: 15),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(child: watchLater()),
-              SizedBox(width: 15),
-              Expanded(child: watched()),
-            ],
-          ),
-          SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              rating(),
-              parentalRating(),
-            ],
-          ),
-          SizedBox(height: 25),
-          play(),
+          horizontalListMovies(title: 'Filmes do mesmo gênero'),
         ],
       ),
     );
@@ -163,35 +194,47 @@ class _MoviePageState extends ModularState<MoviePage, MovieController> {
   }
 
   watchLater() {
-    return InkWell(
-      onTap: () {},
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: 3,
-                color: Theme.of(context).primaryColor,
+    return Observer(builder: (_) {
+      return InkWell(
+        onTap: () async {
+          await controller.watchLater();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 3,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              child: IconButton(
+                icon: Icon(
+                    controller.movieUserModel == null
+                        ? Icons.add
+                        : Icons.check_box,
+                    color: Theme.of(context).primaryColor),
+                color: Colors.white,
+                onPressed: () async {
+                  await controller.watchLater();
+                },
               ),
             ),
-            child: IconButton(
-              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
-              color: Colors.white,
-              onPressed: () {},
+            SizedBox(height: 10),
+            Text(
+              controller.movieUserModel == null
+                  ? 'Na lista p/ assistir mais tarde '
+                  : 'Assistir mais tarde',
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Assistir mais tarde',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   watched() {
@@ -230,7 +273,9 @@ class _MoviePageState extends ModularState<MoviePage, MovieController> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: RaisedButton(
-        onPressed: () {},
+        onPressed: () {
+          controller.watched();
+        },
         color: Theme.of(context).primaryColor,
         child: Container(
           height: 50,
@@ -254,14 +299,182 @@ class _MoviePageState extends ModularState<MoviePage, MovieController> {
   }
 
   rating() {
-    return Row(
-      children: [
-        Icon(Icons.star, color: Colors.amber),
-        Icon(Icons.star, color: Colors.amber),
-        Icon(Icons.star, color: Colors.amber),
-        Icon(Icons.star, color: Colors.amber),
-        Icon(Icons.star_border, color: Colors.amber),
-      ],
+    return Observer(builder: (_) {
+      if (controller.movieUserModel == null) {
+        return Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                controller.rating(1);
+              },
+              icon: Icon(Icons.star_border),
+              color: Colors.amber,
+            ),
+            IconButton(
+              onPressed: () {
+                controller.rating(2);
+              },
+              icon: Icon(Icons.star_border),
+              color: Colors.amber,
+            ),
+            IconButton(
+              onPressed: () {
+                controller.rating(3);
+              },
+              icon: Icon(Icons.star_border),
+              color: Colors.amber,
+            ),
+            IconButton(
+              onPressed: () {
+                controller.rating(4);
+              },
+              icon: Icon(Icons.star_border),
+              color: Colors.amber,
+            ),
+            IconButton(
+              onPressed: () {
+                controller.rating(5);
+              },
+              icon: Icon(Icons.star_border),
+              color: Colors.amber,
+            ),
+          ],
+        );
+      }
+
+      return Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              controller.rating(1);
+            },
+            icon: Icon(controller.movieUserModel.note != null &&
+                    controller.movieUserModel.note >= 1
+                ? Icons.star
+                : Icons.star_border),
+            color: Colors.amber,
+          ),
+          IconButton(
+            onPressed: () {
+              controller.rating(2);
+            },
+            icon: Icon(controller.movieUserModel.note != null &&
+                    controller.movieUserModel.note >= 2
+                ? Icons.star
+                : Icons.star_border),
+            color: Colors.amber,
+          ),
+          IconButton(
+            onPressed: () {
+              controller.rating(3);
+            },
+            icon: Icon(controller.movieUserModel.note != null &&
+                    controller.movieUserModel.note >= 3
+                ? Icons.star
+                : Icons.star_border),
+            color: Colors.amber,
+          ),
+          IconButton(
+            onPressed: () {
+              controller.rating(4);
+            },
+            icon: Icon(controller.movieUserModel.note != null &&
+                    controller.movieUserModel.note >= 4
+                ? Icons.star
+                : Icons.star_border),
+            color: Colors.amber,
+          ),
+          IconButton(
+            onPressed: () {
+              controller.rating(5);
+            },
+            icon: Icon(controller.movieUserModel.note != null &&
+                    controller.movieUserModel.note >= 5
+                ? Icons.star
+                : Icons.star_border),
+            color: Colors.amber,
+          ),
+        ],
+      );
+    });
+  }
+
+  horizontalListMovies({@required String title}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              title,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.3,
+              ),
+            ),
+          ),
+          SizedBox(height: 15),
+          Container(
+            height: 130,
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: controller.homeController.listMovies.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                var movies = controller.homeController.listMovies;
+
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: index == 0 ? 16.0 : 8.0,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      Modular.to.pushNamed(
+                        '/movie',
+                        arguments: {
+                          'movieModel': movies[index],
+                        },
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 170,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage(movies[index].image),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          width: 170,
+                          child: Text(
+                            movies[index].name,
+                            style: GoogleFonts.poppins(
+                                color: Colors.grey, fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

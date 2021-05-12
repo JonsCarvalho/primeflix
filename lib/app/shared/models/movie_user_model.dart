@@ -20,7 +20,7 @@ class MovieUserModel {
       return MovieUserModel(
         id: json["fk_filme_id"],
         userId: json["fk_usuario_id"],
-        date: DateTime.parse(json["data"]),
+        date: json["data"] != null ? DateTime.parse(json["data"]) : null,
         favorite: json["favorito"],
         watched: json["assistido"],
         note: json["nota"],

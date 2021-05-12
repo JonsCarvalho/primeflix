@@ -81,6 +81,35 @@ mixin _$MovieController on _MovieControllerBase, Store {
     return _$getMoviesAsyncAction.run(() => super.getMovies());
   }
 
+  final _$watchLaterAsyncAction =
+      AsyncAction('_MovieControllerBase.watchLater');
+
+  @override
+  Future watchLater() {
+    return _$watchLaterAsyncAction.run(() => super.watchLater());
+  }
+
+  final _$watchedAsyncAction = AsyncAction('_MovieControllerBase.watched');
+
+  @override
+  Future watched() {
+    return _$watchedAsyncAction.run(() => super.watched());
+  }
+
+  final _$favoriteAsyncAction = AsyncAction('_MovieControllerBase.favorite');
+
+  @override
+  Future favorite() {
+    return _$favoriteAsyncAction.run(() => super.favorite());
+  }
+
+  final _$ratingAsyncAction = AsyncAction('_MovieControllerBase.rating');
+
+  @override
+  Future rating(int note) {
+    return _$ratingAsyncAction.run(() => super.rating(note));
+  }
+
   final _$_MovieControllerBaseActionController =
       ActionController(name: '_MovieControllerBase');
 

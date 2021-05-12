@@ -37,13 +37,14 @@ class MovieRepository extends Disposable {
     return response;
   }
 
-  Future<Response> favorite({@required movieId, @required userId}) async {
+  Future<Response> favorite(
+      {@required movieId, @required userId, @required favorite}) async {
     final response = await client.put(
       '/filme_usuario',
       data: {
         'fk_filme_id': movieId,
         'fk_usuario_id': userId,
-        'favorito': 1,
+        'favorito': favorite,
       },
     );
     return response;

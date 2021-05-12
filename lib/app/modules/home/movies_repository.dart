@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:dio/native_imp.dart';
 
@@ -17,6 +18,16 @@ class MoviesRepository extends Disposable {
 
   Future<Response> getRecentMovies() async {
     final response = await client.get('/filmes_recentes');
+    return response;
+  }
+
+  Future<Response> getUser({@required userId}) async {
+    final response = await client.get('/usuario/$userId');
+    return response;
+  }
+
+  Future<Response> deleteUser({@required userId}) async {
+    final response = await client.delete('/usuario/$userId');
     return response;
   }
 

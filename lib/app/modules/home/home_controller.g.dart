@@ -109,6 +109,13 @@ mixin _$HomeController on _HomeControllerBase, Store {
     return _$getMoviesAsyncAction.run(() => super.getMovies());
   }
 
+  final _$getUserAsyncAction = AsyncAction('_HomeControllerBase.getUser');
+
+  @override
+  Future getUser() {
+    return _$getUserAsyncAction.run(() => super.getUser());
+  }
+
   final _$getRecentMoviesAsyncAction =
       AsyncAction('_HomeControllerBase.getRecentMovies');
 

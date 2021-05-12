@@ -78,6 +78,15 @@ abstract class _HomeControllerBase with Store {
   }
 
   @action
+  getUser() async {
+    var result = await moviesRepository.getUser(userId: user.id);
+
+    if (result.statusCode == 200) {
+      user = UserModel.fromJson(result.data);
+    }
+  }
+
+  @action
   setRecentMovies(value) => listRecentMovies = value;
 
   @action

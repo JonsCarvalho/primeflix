@@ -1,9 +1,7 @@
 class UserModel {
   int id;
-  String email, name, password, token;
+  String email, name, password;
   int totalTime;
-  int iat;
-  int exp;
 
   UserModel({
     this.id,
@@ -11,9 +9,6 @@ class UserModel {
     this.email,
     this.password,
     this.totalTime,
-    this.exp,
-    this.iat,
-    this.token,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -23,10 +18,7 @@ class UserModel {
         name: json["nome"],
         email: json["email"],
         password: json["password"],
-        exp: json["exp"],
-        iat: json["iat"],
         totalTime: json["tempoTotal"],
-        token: json["token"],
       );
     } else {
       return null;
@@ -38,10 +30,7 @@ class UserModel {
       "id": this.id,
       "name": this.name,
       "email": this.email,
-      "exp": this.exp,
-      "iat": this.iat,
       "totalTime": this.totalTime,
-      "token": this.token,
     };
   }
 }

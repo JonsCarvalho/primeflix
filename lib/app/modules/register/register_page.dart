@@ -32,7 +32,7 @@ class _RegisterPageState
         children: [
           inputLogin(),
           SizedBox(height: 15),
-          loginButton(),
+          registerButton(),
           SizedBox(height: 15),
         ],
       ),
@@ -151,25 +151,7 @@ class _RegisterPageState
     );
   }
 
-  loginButton() {
-    // return Padding(
-    //   padding: _horizontalPadding,
-    //   child: Observer(builder: (_) {
-    //     return InkWell(
-    //       onTap: (){
-    //         controller.signInWithEmailAndPassword(
-    //           controller.loginClient.email,
-    //           controller.loginClient.password,
-    //           context,
-    //         );
-    //         Modular.to.pushReplacementNamed('/home');
-    //       },
-    //       child: Container(
-    //         height: 45,
-    //         width: 150,
-    //         color: Colors.orange,
-    //       ),
-    //     );
+  registerButton() {
     return Padding(
       padding: _horizontalPadding,
       child: Observer(builder: (_) {

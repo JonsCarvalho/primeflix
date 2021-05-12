@@ -132,7 +132,7 @@ abstract class _RegisterControllerBase with Store {
 
     if (result.statusCode == 400) {
       registerState = RegisterState.FAIL_NOT_REGISTERED;
-      CoolAlert.show(
+      return CoolAlert.show(
         context: context,
         title: 'Erro',
         confirmBtnColor: Theme.of(context).primaryColor,
@@ -145,7 +145,7 @@ abstract class _RegisterControllerBase with Store {
       );
     } else if (result.statusCode != 200 && result.statusCode != 400) {
       registerState = RegisterState.FAIL;
-      CoolAlert.show(
+      return CoolAlert.show(
         context: context,
         title: 'Erro',
         confirmBtnColor: Theme.of(context).primaryColor,
@@ -159,7 +159,8 @@ abstract class _RegisterControllerBase with Store {
     }
 
     if (result.data != null) {
-      CoolAlert.show(
+      registerState = RegisterState.SUCCESS;
+      return CoolAlert.show(
           context: context,
           title: 'Sucesso!',
           confirmBtnColor: Theme.of(context).primaryColor,
@@ -167,6 +168,7 @@ abstract class _RegisterControllerBase with Store {
           type: CoolAlertType.success,
           text: 'Usuário criado com sucesso! Deseja realizar o login?',
           onConfirmBtnTap: () async {
+            Modular.to.pop();
             await loginController.signInWithEmailAndPassword(
                 email, password, context);
           },
@@ -176,8 +178,6 @@ abstract class _RegisterControllerBase with Store {
           onCancelBtnTap: () {
             Modular.to.pop();
           });
-
-      registerState = RegisterState.SUCCESS;
     }
   }
 }

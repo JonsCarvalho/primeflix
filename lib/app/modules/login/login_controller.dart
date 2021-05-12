@@ -29,42 +29,58 @@ abstract class _LoginControllerBase with Store {
   signInWithEmailAndPassword(email, password, context) async {
     loginState = LoginState.LOADING;
 
-    var result = await loginRepository.login(email: email, password: password);
+    var result;
+    try {
+      result = await loginRepository.login(email: email, password: password);
 
-    if (result.statusCode == 400) {
-      loginState = LoginState.FAIL_NOT_REGISTERED;
-      CoolAlert.show(
-        context: context,
-        title: 'Erro',
-        confirmBtnColor: Theme.of(context).primaryColor,
-        borderRadius: 15,
-        type: CoolAlertType.error,
-        text: result.statusMessage,
-        onConfirmBtnTap: () {
-          Modular.to.pop();
-        },
-      );
-    } else if (result.statusCode != 200) {
+      if (result.statusCode == 200) {
+        user = UserModel.fromJson(result.data);
+
+        loginState = LoginState.SUCCESS;
+
+        Modular.to.pushReplacementNamed('/home', arguments: {'user': user});
+      }
+
+      if (result.statusCode == 400) {
+        loginState = LoginState.FAIL_NOT_REGISTERED;
+        return CoolAlert.show(
+          context: context,
+          title: 'Erro',
+          confirmBtnColor: Theme.of(context).primaryColor,
+          borderRadius: 15,
+          type: CoolAlertType.error,
+          text: result.statusMessage,
+          onConfirmBtnTap: () {
+            Modular.to.pop();
+          },
+        );
+      } else if (result.statusCode != 200) {
+        loginState = LoginState.FAIL;
+        return CoolAlert.show(
+          context: context,
+          title: 'Erro',
+          confirmBtnColor: Theme.of(context).primaryColor,
+          borderRadius: 15,
+          type: CoolAlertType.error,
+          text: result.statusMessage,
+          onConfirmBtnTap: () {
+            Modular.to.pop();
+          },
+        );
+      }
+    } catch (e) {
       loginState = LoginState.FAIL;
-      CoolAlert.show(
+      return CoolAlert.show(
         context: context,
         title: 'Erro',
         confirmBtnColor: Theme.of(context).primaryColor,
         borderRadius: 15,
         type: CoolAlertType.error,
-        text: result.statusMessage,
+        text: 'Usuário não registrado ou senha incorreta!',
         onConfirmBtnTap: () {
           Modular.to.pop();
         },
       );
-    }
-
-    if (result.statusCode == 200) {
-      user = UserModel.fromJson(result.data);
-
-      loginState = LoginState.SUCCESS;
-
-      Modular.to.pushReplacementNamed('/home', arguments: {'user': user});
     }
   }
 }

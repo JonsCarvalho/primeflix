@@ -121,33 +121,44 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                   padding: EdgeInsets.only(
                     left: index == 0 ? 16.0 : 8.0,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 170,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: NetworkImage(movies[index].image),
-                            fit: BoxFit.fill,
+                  child: InkWell(
+                    onTap: () {
+                      Modular.to.pushNamed(
+                        '/movie',
+                        arguments: {
+                          'movieModel': movies[index],
+                        },
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 170,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage(movies[index].image),
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: 170,
-                        child: Text(
-                          movies[index].name,
-                          style: GoogleFonts.poppins(
-                              color: Colors.grey, fontSize: 12),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      )
-                    ],
+                        SizedBox(height: 10),
+                        Container(
+                          width: 170,
+                          child: Text(
+                            movies[index].name,
+                            style: GoogleFonts.poppins(
+                                color: Colors.grey, fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 );
               },
